@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>جدول التوصيل</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0f1e;
+    --card: #111827;
+    --card2: #161f32;
+    --accent: #f59e0b;
+    --accent2: #f97316;
+    --text: #f1f5f9;
+    --muted: #64748b;
+    --border: #1e293b;
+    --done: #10b981;
+    --row-hover: #1a2540;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 20px 16px 40px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+  }
+
+  .header p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-top: 4px;
+  }
+
+  /* Day Tabs */
+  .tabs-wrapper {
+    overflow-x: auto;
+    padding-bottom: 6px;
+    margin-bottom: 24px;
+    scrollbar-width: none;
+  }
+  .tabs-wrapper::-webkit-scrollbar { display: none; }
+
+  .tabs {
+    display: flex;
+    gap: 8px;
+    width: max-content;
+    margin: 0 auto;
+  }
+
+  .tab {
+    padding: 9px 20px;
+    border-radius: 50px;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    white-space: nowrap;
+    position: relative;
+  }
+
+  .tab:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .tab.active {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-color: transparent;
+    color: #000;
+    font-weight: 800;
+  }
+
+  .tab .today-dot {
+    position: absolute;
+    top: 4px;
+    left: 8px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--done);
+    display: none;
+  }
+  .tab.today-tab .today-dot { display: block; }
+
+  /* Table card */
+  .table-card {
+    background: var(--card);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    max-width: 900px;
+    margin: 0 auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+
+  .table-card-header {
+    padding: 18px 24px;
+    background: var(--card2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .table-card-header h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .day-badge {
+    background: rgba(245,158,11,0.15);
+    color: var(--accent);
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 50px;
+    padding: 4px 14px;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  /* Table */
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .schedule-table thead th {
+    padding: 14px 20px;
+    text-align: right;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: var(--card2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .schedule-table thead th:last-child { text-align: center; }
+
+  .schedule-table tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  .schedule-table tbody tr:last-child { border-bottom: none; }
+  .schedule-table tbody tr:hover { background: var(--row-hover); }
+  .schedule-table tbody tr.completed { opacity: 0.45; }
+
+  .schedule-table td {
+    padding: 16px 20px;
+    font-size: 0.95rem;
+    vertical-align: middle;
+  }
+
+  .client-name {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .client-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: #000;
+    flex-shrink: 0;
+  }
+
+  .time-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 5px 11px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .time-badge svg { opacity: 0.5; }
+
+  .break-badge {
+    background: rgba(99,102,241,0.1);
+    border-color: rgba(99,102,241,0.25);
+    color: #a5b4fc;
+  }
+
+  .check-col { text-align: center; }
+
+  /* Custom checkbox */
+  .check-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .check-wrap input[type="checkbox"] { display: none; }
+
+  .check-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    color: transparent;
+  }
+
+  .check-wrap input:checked + .check-btn {
+    background: var(--done);
+    border-color: var(--done);
+    color: #fff;
+  }
+
+  .check-btn:hover {
+    border-color: var(--done);
+    background: rgba(16,185,129,0.1);
+  }
+
+  /* Empty state */
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+
+  .empty svg {
+    opacity: 0.3;
+    margin-bottom: 16px;
+  }
+
+  .empty p { font-size: 1rem; }
+
+  /* Stats bar */
+  .stats-bar {
+    display: flex;
+    gap: 12px;
+    max-width: 900px;
+    margin: 0 auto 20px;
+  }
+
+  .stat-pill {
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    text-align: center;
+  }
+
+  .stat-pill .num {
+    font-size: 1.6rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .stat-pill .label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .header h1 { font-size: 1.6rem; }
+    .schedule-table td, .schedule-table thead th { padding: 12px 14px; }
+    .client-avatar { display: none; }
+    .stats-bar { gap: 8px; }
+    .stat-pill .num { font-size: 1.3rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🚗 جدول التوصيل</h1>
+  <p id="today-label">اليوم: —</p>
+</div>
+
+<div class="tabs-wrapper">
+  <div class="tabs" id="tabs"></div>
+</div>
+
+<div class="stats-bar" id="stats-bar">
+  <div class="stat-pill"><div class="num" id="stat-total">0</div><div class="label">إجمالي العملاء</div></div>
+  <div class="stat-pill"><div class="num" id="stat-done">0</div><div class="label">تم التوصيل</div></div>
+  <div class="stat-pill"><div class="num" id="stat-left">0</div><div class="label">المتبقي</div></div>
+</div>
+
+<div class="table-card">
+  <div class="table-card-header">
+    <h2 id="card-title">الجدول</h2>
+    <span class="day-badge" id="card-badge">—</span>
+  </div>
+  <div id="table-body"></div>
+</div>
+
+<script>
+// ======= بيانات الجدول =======
+// عدّل هنا: كل يوم فيه مصفوفة من العملاء
+// كل عميل: [الاسم، وقت الخروج، وقت التروية]
+// يمكن إضافة حتى 7 عملاء لكل يوم
+
+// البيانات: [الاسم، وقت الخروج، وقت الترويحة]
+// "off" = عطلة، "" = فاضي
+const schedules = {
+  الأحد: [
+    ["المغيرة", "off",  "off"],
+    ["كرم",     "8:30", "2:40"],
+    ["جمانة",   "10:00","4:00"],
+    ["راشد",    "11:00","5:00"],
+    ["ماهر",    "11:00","12:00"],
+    ["رؤى",     "off",  "off"],
+    ["سيف",     "",     "2:00"],
+  ],
+  الإثنين: [
+    ["المغيرة", "7:45", ""],
+    ["كرم",     "8:30", "2:40"],
+    ["جمانة",   "10:00","4:00"],
+    ["راشد",    "11:00","5:00"],
+    ["ماهر",    "11:00","12:00"],
+    ["رؤى",     "4:00", "1:00"],
+    ["سيف",     "",     "2:00"],
+  ],
+  الثلاثاء: [
+    ["المغيرة", "7:45", ""],
+    ["كرم",     "8:30", "1:00"],
+    ["جمانة",   "10:00","4:00"],
+    ["راشد",    "11:00","5:00"],
+    ["ماهر",    "11:00","12:00"],
+    ["رؤى",     "4:00", "1:00"],
+    ["سيف",     "",     "2:00"],
+  ],
+  الأربعاء: [
+    ["المغيرة", "7:45", ""],
+    ["كرم",     "8:30", "2:40"],
+    ["جمانة",   "10:00","4:00"],
+    ["راشد",    "11:00","5:00"],
+    ["ماهر",    "11:00","12:00"],
+    ["رؤى",     "8:00", "1:00"],
+    ["سيف",     "",     "2:00"],
+  ],
+  الخميس: [
+    ["المغيرة", "7:45", ""],
+    ["كرم",     "8:30", "2:40"],
+    ["جمانة",   "10:00","4:00"],
+    ["راشد",    "11:00","5:00"],
+    ["ماهر",    "11:00","12:00"],
+    ["رؤى",     "4:00", "1:00"],
+    ["سيف",     "",     "2:00"],
+  ],
+  الجمعة: [
+    ["المغيرة", "off",  "off"],
+    ["كرم",     "off",  "off"],
+    ["جمانة",   "off",  "off"],
+    ["راشد",    "off",  "off"],
+    ["ماهر",    "off",  "off"],
+    ["رؤى",     "4:00", "1:00"],
+    ["سيف",     "",     "2:00"],
+  ],
+  السبت: [
+    ["المغيرة", "7:45", ""],
+    ["كرم",     "off",  "off"],
+    ["جمانة",   "off",  "off"],
+    ["راشد",    "11:00","5:00"],
+    ["ماهر",    "11:00","12:00"],
+    ["رؤى",     "4:00", "1:00"],
+    ["سيف",     "off",  "off"],
+  ],
+};
+
+const days = ["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+
+const avatarColors = [
+  "#f59e0b","#f97316","#ef4444","#8b5cf6",
+  "#06b6d4","#10b981","#ec4899"
+];
+
+// حالة الإنجاز (محفوظة في الذاكرة)
+let doneState = {};
+
+function getTodayArabic() {
+  const dayIndex = new Date().getDay(); // 0=Sun
+  return days[dayIndex];
+}
+
+let activeDay = getTodayArabic();
+
+// رسم التابات
+function renderTabs() {
+  const container = document.getElementById('tabs');
+  container.innerHTML = '';
+  const todayAr = getTodayArabic();
+
+  days.forEach(day => {
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (day === activeDay ? ' active' : '') + (day === todayAr ? ' today-tab' : '');
+    btn.innerHTML = `<span class="today-dot"></span>${day}`;
+    btn.onclick = () => { activeDay = day; renderTabs(); renderTable(); };
+    container.appendChild(btn);
+  });
+}
+
+// رسم الجدول
+function renderTable() {
+  const clients = schedules[activeDay] || [];
+  const todayAr = getTodayArabic();
+
+  document.getElementById('card-title').textContent = `جدول يوم ${activeDay}`;
+  document.getElementById('card-badge').textContent = activeDay === todayAr ? '📅 اليوم' : activeDay;
+
+  const container = document.getElementById('table-body');
+
+  if (!clients.length) {
+    container.innerHTML = `
+      <div class="empty">
+        <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+        <p>لا يوجد جدول لهذا اليوم</p>
+      </div>`;
+    updateStats(0, 0);
+    return;
+  }
+
+  let html = `<table class="schedule-table">
+    <thead>
+      <tr>
+        <th>العميل</th>
+        <th>وقت الخروج</th>
+        <th>وقت الترويحة</th>
+        <th class="check-col">تم</th>
+      </tr>
+    </thead>
+    <tbody>`;
+
+  const timeCell = (val, isBreak) => {
+    if (val === 'off') return `<span style="color:#ef4444;font-weight:700;font-size:0.85rem;">🔴 عطلة</span>`;
+    if (!val) return `<span style="color:var(--muted);font-size:0.85rem;">—</span>`;
+    return `<span class="time-badge ${isBreak?'break-badge':''}">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+      </svg>
+      ${val}
+    </span>`;
+  };
+
+  clients.forEach((c, i) => {
+    const key = `${activeDay}_${i}`;
+    const isDone = doneState[key];
+    const initial = c[0].charAt(0);
+    const color = avatarColors[i % avatarColors.length];
+    const isOff = c[1] === 'off';
+
+    html += `
+      <tr class="${isDone ? 'completed' : ''}" id="row-${i}" style="${isOff ? 'opacity:0.45' : ''}">
+        <td>
+          <div class="client-name">
+            <div class="client-avatar" style="background:${isOff ? '#374151' : color}">${initial}</div>
+            <span style="${isOff ? 'color:var(--muted)' : ''}">${c[0]}</span>
+          </div>
+        </td>
+        <td>${timeCell(c[1], false)}</td>
+        <td>${timeCell(c[2], true)}</td>
+        <td class="check-col">
+          ${isOff ? '<span style="color:var(--muted);font-size:0.8rem;">—</span>' : `
+          <label class="check-wrap">
+            <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleDone('${key}', ${i}, this)">
+            <div class="check-btn">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+          </label>`}
+        </td>
+      </tr>`;
+  });
+
+  html += `</tbody></table>`;
+  container.innerHTML = html;
+
+  const activeClients = clients.filter(c => c[1] !== 'off');
+  const doneCount = clients.filter((c, i) => c[1] !== 'off' && doneState[`${activeDay}_${i}`]).length;
+  updateStats(activeClients.length, doneCount);
+}
+
+function toggleDone(key, rowIndex, checkbox) {
+  doneState[key] = checkbox.checked;
+  const row = document.getElementById(`row-${rowIndex}`);
+  row.classList.toggle('completed', checkbox.checked);
+
+  const clients = schedules[activeDay] || [];
+  const activeClients = clients.filter(c => c[1] !== 'off');
+  const doneCount = clients.filter((c, i) => c[1] !== 'off' && doneState[`${activeDay}_${i}`]).length;
+  updateStats(activeClients.length, doneCount);
+}
+
+function updateStats(total, done) {
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-done').textContent = done;
+  document.getElementById('stat-left').textContent = total - done;
+}
+
+// تهيئة
+const todayAr = getTodayArabic();
+document.getElementById('today-label').textContent = `اليوم: ${todayAr}`;
+
+renderTabs();
+renderTable();
+</script>
+</body>
+</html>
