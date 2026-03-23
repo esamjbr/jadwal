@@ -7,104 +7,90 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0f1e; --card: #111827; --card2: #161f32;
-    --accent: #f59e0b; --accent2: #f97316;
-    --text: #f1f5f9; --muted: #64748b; --border: #1e293b;
-    --done: #10b981; --row-hover: #1a2540;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Tajawal', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 20px 16px 40px; }
-
-  .header { text-align: center; margin-bottom: 28px; }
-  .header h1 { font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-  .header p { color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
-
-  .tabs-wrapper { overflow-x: auto; padding-bottom: 6px; margin-bottom: 24px; scrollbar-width: none; }
-  .tabs-wrapper::-webkit-scrollbar { display: none; }
-  .tabs { display: flex; gap: 8px; width: max-content; margin: 0 auto; }
-  .tab { padding: 9px 20px; border-radius: 50px; border: 1.5px solid var(--border); background: var(--card); color: var(--muted); cursor: pointer; font-family: 'Tajawal', sans-serif; font-size: 0.9rem; font-weight: 600; transition: all 0.2s; white-space: nowrap; position: relative; }
-  .tab:hover { border-color: var(--accent); color: var(--text); }
-  .tab.active { background: linear-gradient(135deg, var(--accent), var(--accent2)); border-color: transparent; color: #000; font-weight: 800; }
-  .tab .today-dot { position: absolute; top: 4px; left: 8px; width: 6px; height: 6px; border-radius: 50%; background: var(--done); display: none; }
-  .tab.today-tab .today-dot { display: block; }
-
-  .stats-bar { display: flex; gap: 12px; max-width: 900px; margin: 0 auto 20px; }
-  .stat-pill { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; text-align: center; }
-  .stat-pill .num { font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-  .stat-pill .label { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
-
-  .table-card { background: var(--card); border-radius: 20px; border: 1px solid var(--border); overflow: hidden; max-width: 900px; margin: 0 auto; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
-  .table-card-header { padding: 18px 24px; background: var(--card2); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .table-card-header h2 { font-size: 1.1rem; font-weight: 700; }
-  .day-badge { background: rgba(245,158,11,0.15); color: var(--accent); border: 1px solid rgba(245,158,11,0.3); border-radius: 50px; padding: 4px 14px; font-size: 0.8rem; font-weight: 700; }
-
-  .schedule-table { width: 100%; border-collapse: collapse; }
-  .schedule-table thead th { padding: 13px 16px; text-align: right; font-size: 0.78rem; font-weight: 700; color: var(--muted); background: var(--card2); border-bottom: 1px solid var(--border); }
-  .schedule-table thead th:last-child { text-align: center; }
-  .schedule-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
-  .schedule-table tbody tr:last-child { border-bottom: none; }
-  .schedule-table tbody tr:hover { background: var(--row-hover); }
-  .schedule-table tbody tr.completed { opacity: 0.45; }
-  .schedule-table td { padding: 13px 16px; font-size: 0.95rem; vertical-align: middle; }
-
-  .client-name { font-weight: 700; display: flex; align-items: center; gap: 10px; }
-  .client-avatar { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.82rem; color: #000; flex-shrink: 0; }
-
-  .time-badge { display: inline-flex; align-items: center; gap: 5px; background: rgba(255,255,255,0.05); border: 1.5px solid var(--border); border-radius: 8px; padding: 5px 10px; font-size: 0.85rem; font-weight: 600; color: var(--text); cursor: pointer; transition: border-color 0.2s, background 0.2s; }
-  .time-badge:hover { border-color: var(--accent); background: rgba(245,158,11,0.08); }
-  .time-badge svg { opacity: 0.4; flex-shrink: 0; }
-  .break-badge { background: rgba(99,102,241,0.08); border-color: rgba(99,102,241,0.2); color: #a5b4fc; }
-  .break-badge:hover { border-color: #818cf8; background: rgba(99,102,241,0.15); }
-  .off-text { color: #ef4444; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
-
-  .check-col { text-align: center; }
-  .check-wrap { display: flex; align-items: center; justify-content: center; }
-  .check-wrap input[type="checkbox"] { display: none; }
-  .check-btn { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--border); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; color: transparent; }
-  .check-wrap input:checked + .check-btn { background: var(--done); border-color: var(--done); color: #fff; }
-  .check-btn:hover { border-color: var(--done); background: rgba(16,185,129,0.1); }
-
-  .empty { text-align: center; padding: 50px 20px; color: var(--muted); }
-
-  /* ===== MODAL ===== */
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(5px); z-index: 100; align-items: flex-end; justify-content: center; padding: 0; }
-  .modal-overlay.open { display: flex; }
-
-  .modal { background: var(--card); border: 1px solid var(--border); border-radius: 24px 24px 0 0; padding: 28px 24px 36px; width: 100%; max-width: 480px; animation: slideUp 0.3s cubic-bezier(.22,1,.36,1); }
-  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
-  .modal-handle { width: 40px; height: 4px; background: var(--border); border-radius: 4px; margin: 0 auto 20px; }
-  .modal h3 { font-size: 1.15rem; font-weight: 800; margin-bottom: 22px; color: var(--accent); text-align: center; }
-
-  .modal-field { margin-bottom: 18px; }
-  .modal-field label { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 8px; font-weight: 700; }
-
-  .toggle-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .toggle { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
-  .toggle input { display: none; }
-  .toggle-slider { position: absolute; inset: 0; background: var(--border); border-radius: 24px; cursor: pointer; transition: background 0.2s; }
-  .toggle input:checked + .toggle-slider { background: var(--accent); }
-  .toggle-slider::before { content: ''; position: absolute; width: 18px; height: 18px; background: #fff; border-radius: 50%; top: 3px; right: 3px; transition: transform 0.2s; }
-  .toggle input:checked + .toggle-slider::before { transform: translateX(-20px); }
-  .toggle-label { font-size: 0.9rem; color: var(--text); }
-
-  .modal-field input[type="time"] { width: 100%; background: var(--card2); border: 1.5px solid var(--border); border-radius: 12px; padding: 12px 16px; color: var(--text); font-family: 'Tajawal', sans-serif; font-size: 1.1rem; outline: none; transition: border-color 0.2s; }
-  .modal-field input[type="time"]:focus { border-color: var(--accent); }
-  .modal-field input[type="time"]:disabled { opacity: 0.3; pointer-events: none; }
-
-  .modal-actions { display: flex; gap: 10px; margin-top: 24px; }
-  .btn-cancel { flex: 1; padding: 14px; border-radius: 14px; border: 1.5px solid var(--border); background: transparent; color: var(--muted); font-family: 'Tajawal', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; }
-  .btn-save { flex: 2; padding: 14px; border-radius: 14px; border: none; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #000; font-family: 'Tajawal', sans-serif; font-size: 1rem; font-weight: 800; cursor: pointer; }
-
-  @media (max-width: 600px) {
-    .header h1 { font-size: 1.6rem; }
-    .schedule-table td, .schedule-table thead th { padding: 11px 10px; }
-    .client-avatar { display: none; }
-    .stats-bar { gap: 8px; }
-    .stat-pill .num { font-size: 1.3rem; }
-    .time-badge { font-size: 0.8rem; padding: 4px 8px; }
-  }
+  :root{--bg:#0a0f1e;--card:#111827;--card2:#161f32;--accent:#f59e0b;--accent2:#f97316;--text:#f1f5f9;--muted:#64748b;--border:#1e293b;--done:#10b981;--danger:#ef4444;--row-hover:#1a2540;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:20px 16px 40px;}
+  .header{text-align:center;margin-bottom:24px;}
+  .header h1{font-size:1.9rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .header p{color:var(--muted);font-size:.88rem;margin-top:4px;}
+  .tabs-wrapper{overflow-x:auto;padding-bottom:6px;margin-bottom:20px;scrollbar-width:none;}
+  .tabs-wrapper::-webkit-scrollbar{display:none;}
+  .tabs{display:flex;gap:8px;width:max-content;margin:0 auto;}
+  .tab{padding:8px 18px;border-radius:50px;border:1.5px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.88rem;font-weight:600;transition:all .2s;white-space:nowrap;position:relative;}
+  .tab:hover{border-color:var(--accent);color:var(--text);}
+  .tab.active{background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:transparent;color:#000;font-weight:800;}
+  .tab .today-dot{position:absolute;top:4px;left:8px;width:6px;height:6px;border-radius:50%;background:var(--done);display:none;}
+  .tab.today-tab .today-dot{display:block;}
+  .stats-bar{display:flex;gap:10px;max-width:900px;margin:0 auto 18px;}
+  .stat-pill{flex:1;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:11px 14px;text-align:center;}
+  .stat-pill .num{font-size:1.5rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .stat-pill .label{font-size:.72rem;color:var(--muted);margin-top:2px;}
+  .table-card{background:var(--card);border-radius:20px;border:1px solid var(--border);overflow:hidden;max-width:900px;margin:0 auto;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+  .table-card-header{padding:16px 20px;background:var(--card2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .table-card-header h2{font-size:1.05rem;font-weight:700;}
+  .header-actions{display:flex;align-items:center;gap:10px;}
+  .day-badge{background:rgba(245,158,11,.15);color:var(--accent);border:1px solid rgba(245,158,11,.3);border-radius:50px;padding:4px 12px;font-size:.78rem;font-weight:700;}
+  .add-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:50px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;font-family:'Tajawal',sans-serif;font-size:.82rem;font-weight:800;cursor:pointer;}
+  .schedule-table{width:100%;border-collapse:collapse;}
+  .schedule-table thead th{padding:12px 14px;text-align:right;font-size:.75rem;font-weight:700;color:var(--muted);background:var(--card2);border-bottom:1px solid var(--border);}
+  .schedule-table thead th:last-child{text-align:center;}
+  .schedule-table tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
+  .schedule-table tbody tr:last-child{border-bottom:none;}
+  .schedule-table tbody tr:hover{background:var(--row-hover);}
+  .schedule-table tbody tr.completed{opacity:.45;}
+  .schedule-table td{padding:12px 14px;font-size:.92rem;vertical-align:middle;}
+  .client-name{font-weight:700;display:flex;align-items:center;gap:9px;}
+  .client-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.8rem;color:#000;flex-shrink:0;}
+  .time-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:8px;padding:4px 9px;font-size:.82rem;font-weight:600;color:var(--text);cursor:pointer;transition:border-color .2s,background .2s;}
+  .time-badge:hover{border-color:var(--accent);background:rgba(245,158,11,.08);}
+  .time-badge svg{opacity:.4;flex-shrink:0;}
+  .break-badge{background:rgba(99,102,241,.08);border-color:rgba(99,102,241,.2);color:#a5b4fc;}
+  .break-badge:hover{border-color:#818cf8;}
+  .off-text{color:var(--danger);font-weight:700;font-size:.82rem;cursor:pointer;}
+  .check-col{text-align:center;}
+  .check-wrap{display:flex;align-items:center;justify-content:center;}
+  .check-wrap input[type="checkbox"]{display:none;}
+  .check-btn{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;color:transparent;}
+  .check-wrap input:checked+.check-btn{background:var(--done);border-color:var(--done);color:#fff;}
+  .del-btn{width:28px;height:28px;border-radius:50%;border:none;background:rgba(239,68,68,.1);color:var(--danger);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:.9rem;}
+  .del-btn:hover{background:rgba(239,68,68,.25);}
+  .actions-td{display:flex;align-items:center;justify-content:center;gap:8px;}
+  .empty{text-align:center;padding:50px 20px;color:var(--muted);}
+  /* modals */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(5px);z-index:100;align-items:flex-end;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:var(--card);border:1px solid var(--border);border-radius:24px 24px 0 0;padding:24px 22px 36px;width:100%;max-width:480px;animation:slideUp .3s cubic-bezier(.22,1,.36,1);max-height:90vh;overflow-y:auto;}
+  @keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+  .modal-handle{width:40px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 18px;}
+  .modal h3{font-size:1.1rem;font-weight:800;margin-bottom:20px;color:var(--accent);text-align:center;}
+  .modal-field{margin-bottom:16px;}
+  .modal-field label{display:block;font-size:.8rem;color:var(--muted);margin-bottom:7px;font-weight:700;}
+  .modal-field input[type="text"],.modal-field input[type="time"]{width:100%;background:var(--card2);border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:1rem;outline:none;transition:border-color .2s;}
+  .modal-field input:focus{border-color:var(--accent);}
+  .modal-field input:disabled{opacity:.3;pointer-events:none;}
+  .days-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+  .day-check input{display:none;}
+  .day-check label{display:block;text-align:center;padding:8px 4px;border-radius:10px;border:1.5px solid var(--border);font-size:.82rem;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s;}
+  .day-check input:checked+label{background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:transparent;color:#000;font-weight:800;}
+  .toggle-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+  .toggle{position:relative;width:42px;height:22px;flex-shrink:0;}
+  .toggle input{display:none;}
+  .toggle-slider{position:absolute;inset:0;background:var(--border);border-radius:22px;cursor:pointer;transition:background .2s;}
+  .toggle input:checked+.toggle-slider{background:var(--accent);}
+  .toggle-slider::before{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;right:3px;transition:transform .2s;}
+  .toggle input:checked+.toggle-slider::before{transform:translateX(-20px);}
+  .toggle-label{font-size:.88rem;color:var(--text);}
+  .modal-actions{display:flex;gap:10px;margin-top:22px;}
+  .btn-cancel{flex:1;padding:13px;border-radius:14px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-family:'Tajawal',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;}
+  .btn-save{flex:2;padding:13px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;font-family:'Tajawal',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;}
+  .btn-danger{flex:1;padding:13px;border-radius:14px;border:1.5px solid rgba(239,68,68,.3);background:rgba(239,68,68,.1);color:var(--danger);font-family:'Tajawal',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;}
+  .confirm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(5px);z-index:200;align-items:center;justify-content:center;padding:20px;}
+  .confirm-overlay.open{display:flex;}
+  .confirm-box{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px 24px;width:100%;max-width:340px;text-align:center;}
+  .confirm-box h4{font-size:1.1rem;font-weight:800;margin-bottom:10px;}
+  .confirm-box p{color:var(--muted);font-size:.9rem;margin-bottom:22px;}
+  .confirm-actions{display:flex;gap:10px;}
+  @media(max-width:600px){.header h1{font-size:1.5rem;}.schedule-table td,.schedule-table thead th{padding:10px 10px;}.client-avatar{display:none;}.stats-bar{gap:7px;}.stat-pill .num{font-size:1.2rem;}.time-badge{font-size:.76rem;padding:4px 7px;}}
 </style>
 </head>
 <body>
@@ -114,9 +100,7 @@
   <p id="today-label">اليوم: —</p>
 </div>
 
-<div class="tabs-wrapper">
-  <div class="tabs" id="tabs"></div>
-</div>
+<div class="tabs-wrapper"><div class="tabs" id="tabs"></div></div>
 
 <div class="stats-bar">
   <div class="stat-pill"><div class="num" id="stat-total">0</div><div class="label">إجمالي العملاء</div></div>
@@ -127,234 +111,243 @@
 <div class="table-card">
   <div class="table-card-header">
     <h2 id="card-title">الجدول</h2>
-    <span class="day-badge" id="card-badge">—</span>
+    <div class="header-actions">
+      <span class="day-badge" id="card-badge">—</span>
+      <button class="add-btn" onclick="openAddClient()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
+        زبون جديد
+      </button>
+    </div>
   </div>
   <div id="table-body"></div>
 </div>
 
-<!-- Bottom Sheet Modal -->
-<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
-  <div class="modal" id="modal-box">
+<!-- Edit Modal -->
+<div class="modal-overlay" id="edit-overlay" onclick="if(event.target.id==='edit-overlay')closeEdit()">
+  <div class="modal">
     <div class="modal-handle"></div>
-    <h3 id="modal-title">✏️ تعديل الموعد</h3>
-
+    <h3 id="edit-title">✏️ تعديل</h3>
     <div class="modal-field">
       <label>وقت الخروج</label>
-      <div class="toggle-row">
-        <label class="toggle"><input type="checkbox" id="out-off-toggle" onchange="toggleOutOff()"><span class="toggle-slider"></span></label>
-        <span class="toggle-label">عطلة</span>
-      </div>
+      <div class="toggle-row"><label class="toggle"><input type="checkbox" id="out-off-toggle" onchange="toggleOutOff()"><span class="toggle-slider"></span></label><span class="toggle-label">عطلة</span></div>
       <input type="time" id="modal-out">
     </div>
-
     <div class="modal-field">
       <label>وقت الترويحة</label>
-      <div class="toggle-row">
-        <label class="toggle"><input type="checkbox" id="break-off-toggle" onchange="toggleBreakOff()"><span class="toggle-slider"></span></label>
-        <span class="toggle-label">فاضي / عطلة</span>
-      </div>
+      <div class="toggle-row"><label class="toggle"><input type="checkbox" id="break-off-toggle" onchange="toggleBreakOff()"><span class="toggle-slider"></span></label><span class="toggle-label">فاضي / عطلة</span></div>
       <input type="time" id="modal-break">
     </div>
-
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal()">إلغاء</button>
-      <button class="btn-save" onclick="saveModal()">💾 حفظ</button>
+      <button class="btn-cancel" onclick="closeEdit()">إلغاء</button>
+      <button class="btn-save" onclick="saveEdit()">💾 حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Client Modal -->
+<div class="modal-overlay" id="add-overlay" onclick="if(event.target.id==='add-overlay')closeAdd()">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3>➕ زبون جديد</h3>
+    <div class="modal-field">
+      <label>اسم الزبون</label>
+      <input type="text" id="add-name" placeholder="مثال: خالد">
+    </div>
+    <div class="modal-field">
+      <label>الأيام اللي يجي فيها (الباقي عطلة)</label>
+      <div class="days-grid" id="days-checkboxes"></div>
+    </div>
+    <div class="modal-field">
+      <label>وقت الخروج</label>
+      <input type="time" id="add-out">
+    </div>
+    <div class="modal-field">
+      <label>وقت الترويحة</label>
+      <input type="time" id="add-break">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeAdd()">إلغاء</button>
+      <button class="btn-save" onclick="saveAdd()">✅ إضافة</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Delete -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <h4>🗑️ حذف الزبون</h4>
+    <p id="confirm-msg"></p>
+    <div class="confirm-actions">
+      <button class="btn-cancel" onclick="closeConfirm()">إلغاء</button>
+      <button class="btn-danger" onclick="confirmDelete()">حذف نهائي</button>
     </div>
   </div>
 </div>
 
 <script>
-const defaultSchedules = {
-  الأحد: [
-    ["المغيرة","off","off"],["كرم","8:30","2:40"],["جمانة","10:00","4:00"],
-    ["راشد","11:00","5:00"],["ماهر","11:00","12:00"],["رؤى","off","off"],["سيف","","2:00"]
-  ],
-  الإثنين: [
-    ["المغيرة","7:45",""],["كرم","8:30","2:40"],["جمانة","10:00","4:00"],
-    ["راشد","11:00","5:00"],["ماهر","11:00","12:00"],["رؤى","4:00","1:00"],["سيف","","2:00"]
-  ],
-  الثلاثاء: [
-    ["المغيرة","7:45",""],["كرم","8:30","1:00"],["جمانة","10:00","4:00"],
-    ["راشد","11:00","5:00"],["ماهر","11:00","12:00"],["رؤى","4:00","1:00"],["سيف","","2:00"]
-  ],
-  الأربعاء: [
-    ["المغيرة","7:45",""],["كرم","8:30","2:40"],["جمانة","10:00","4:00"],
-    ["راشد","11:00","5:00"],["ماهر","11:00","12:00"],["رؤى","8:00","1:00"],["سيف","","2:00"]
-  ],
-  الخميس: [
-    ["المغيرة","7:45",""],["كرم","8:30","2:40"],["جمانة","10:00","4:00"],
-    ["راشد","11:00","5:00"],["ماهر","11:00","12:00"],["رؤى","4:00","1:00"],["سيف","","2:00"]
-  ],
-  الجمعة: [
-    ["المغيرة","off","off"],["كرم","off","off"],["جمانة","off","off"],
-    ["راشد","off","off"],["ماهر","off","off"],["رؤى","4:00","1:00"],["سيف","","2:00"]
-  ],
-  السبت: [
-    ["المغيرة","7:45",""],["كرم","off","off"],["جمانة","off","off"],
-    ["راشد","11:00","5:00"],["ماهر","11:00","12:00"],["رؤى","4:00","1:00"],["سيف","off","off"]
-  ]
+const defaultSchedules={
+  الأحد:[["المغيرة","off","off"],["كرم","8:30","2:40"],["جمانة","10:00","4:00"],["راشد","11:00","5:00"],["ماهر","11:00","12:00"],["رؤى","off","off"],["سيف","","2:00"]],
+  الإثنين:[["المغيرة","7:45",""],["كرم","8:30","2:40"],["جمانة","10:00","4:00"],["راشد","11:00","5:00"],["ماهر","11:00","12:00"],["رؤى","4:00","1:00"],["سيف","","2:00"]],
+  الثلاثاء:[["المغيرة","7:45",""],["كرم","8:30","1:00"],["جمانة","10:00","4:00"],["راشد","11:00","5:00"],["ماهر","11:00","12:00"],["رؤى","4:00","1:00"],["سيف","","2:00"]],
+  الأربعاء:[["المغيرة","7:45",""],["كرم","8:30","2:40"],["جمانة","10:00","4:00"],["راشد","11:00","5:00"],["ماهر","11:00","12:00"],["رؤى","8:00","1:00"],["سيف","","2:00"]],
+  الخميس:[["المغيرة","7:45",""],["كرم","8:30","2:40"],["جمانة","10:00","4:00"],["راشد","11:00","5:00"],["ماهر","11:00","12:00"],["رؤى","4:00","1:00"],["سيف","","2:00"]],
+  الجمعة:[["المغيرة","off","off"],["كرم","off","off"],["جمانة","off","off"],["راشد","off","off"],["ماهر","off","off"],["رؤى","4:00","1:00"],["سيف","","2:00"]],
+  السبت:[["المغيرة","7:45",""],["كرم","off","off"],["جمانة","off","off"],["راشد","11:00","5:00"],["ماهر","11:00","12:00"],["رؤى","4:00","1:00"],["سيف","off","off"]]
 };
+const days=["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+const avatarColors=["#f59e0b","#f97316","#ef4444","#8b5cf6","#06b6d4","#10b981","#ec4899","#14b8a6","#a855f7","#0ea5e9"];
 
-const days = ["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
-const avatarColors = ["#f59e0b","#f97316","#ef4444","#8b5cf6","#06b6d4","#10b981","#ec4899"];
+let schedules=JSON.parse(localStorage.getItem('jadwal_v3')||'null')||JSON.parse(JSON.stringify(defaultSchedules));
+let doneState=JSON.parse(localStorage.getItem('jadwal_done_v3')||'{}');
+const save=()=>localStorage.setItem('jadwal_v3',JSON.stringify(schedules));
+const saveDone=()=>localStorage.setItem('jadwal_done_v3',JSON.stringify(doneState));
+const getTodayAr=()=>days[new Date().getDay()];
+let activeDay=getTodayAr();
 
-let schedules = JSON.parse(localStorage.getItem('jadwal_v2') || 'null') || JSON.parse(JSON.stringify(defaultSchedules));
-let doneState = JSON.parse(localStorage.getItem('jadwal_done_v2') || '{}');
+function toInputTime(t){if(!t||t==='off')return '';const p=t.split(':');return p[0].padStart(2,'0')+':'+(p[1]||'00');}
+function fromInputTime(t){if(!t)return '';const p=t.split(':');return parseInt(p[0])+':'+p[1];}
+function getColor(name){let h=0;for(let c of name)h=(h*31+c.charCodeAt(0))%avatarColors.length;return avatarColors[h];}
 
-const saveSchedules = () => localStorage.setItem('jadwal_v2', JSON.stringify(schedules));
-const saveDone = () => localStorage.setItem('jadwal_done_v2', JSON.stringify(doneState));
-
-const getTodayAr = () => days[new Date().getDay()];
-let activeDay = getTodayAr();
-
-// Modal
-let editDay = '', editIdx = -1;
-
-function toInputTime(t) {
-  if (!t || t === 'off') return '';
-  const p = t.split(':');
-  return p[0].padStart(2,'0') + ':' + (p[1]||'00');
+// Edit
+let editDay='',editIdx=-1;
+function openEdit(day,idx){
+  editDay=day;editIdx=idx;
+  const c=schedules[day][idx];
+  const isOff=c[1]==='off',noBreak=!c[2]||c[2]==='off';
+  document.getElementById('edit-title').textContent='✏️ '+c[0];
+  document.getElementById('out-off-toggle').checked=isOff;
+  document.getElementById('modal-out').value=isOff?'':toInputTime(c[1]);
+  document.getElementById('modal-out').disabled=isOff;
+  document.getElementById('break-off-toggle').checked=noBreak;
+  document.getElementById('modal-break').value=noBreak?'':toInputTime(c[2]);
+  document.getElementById('modal-break').disabled=noBreak;
+  document.getElementById('edit-overlay').classList.add('open');
 }
-function fromInputTime(t) {
-  if (!t) return '';
-  const p = t.split(':');
-  return parseInt(p[0]) + ':' + p[1];
+function toggleOutOff(){
+  const off=document.getElementById('out-off-toggle').checked;
+  document.getElementById('modal-out').disabled=off;
+  if(off){document.getElementById('modal-out').value='';document.getElementById('break-off-toggle').checked=true;document.getElementById('modal-break').disabled=true;document.getElementById('modal-break').value='';}
+}
+function toggleBreakOff(){
+  const off=document.getElementById('break-off-toggle').checked;
+  document.getElementById('modal-break').disabled=off;
+  if(off)document.getElementById('modal-break').value='';
+}
+function closeEdit(){document.getElementById('edit-overlay').classList.remove('open');}
+function saveEdit(){
+  const isOff=document.getElementById('out-off-toggle').checked;
+  const noBreak=document.getElementById('break-off-toggle').checked;
+  const outVal=document.getElementById('modal-out').value;
+  const breakVal=document.getElementById('modal-break').value;
+  schedules[editDay][editIdx][1]=isOff?'off':(outVal?fromInputTime(outVal):'');
+  schedules[editDay][editIdx][2]=(isOff||noBreak)?(isOff?'off':''):(breakVal?fromInputTime(breakVal):'');
+  save();closeEdit();renderTable();
 }
 
-function openEdit(day, idx) {
-  editDay = day; editIdx = idx;
-  const c = schedules[day][idx];
-  const isOff = c[1] === 'off';
-  const noBreak = !c[2] || c[2] === 'off';
-
-  document.getElementById('modal-title').textContent = `✏️ ${c[0]}`;
-  document.getElementById('out-off-toggle').checked = isOff;
-  document.getElementById('modal-out').value = isOff ? '' : toInputTime(c[1]);
-  document.getElementById('modal-out').disabled = isOff;
-  document.getElementById('break-off-toggle').checked = noBreak;
-  document.getElementById('modal-break').value = noBreak ? '' : toInputTime(c[2]);
-  document.getElementById('modal-break').disabled = noBreak;
-
-  document.getElementById('modal-overlay').classList.add('open');
+// Add Client
+function openAddClient(){
+  document.getElementById('add-name').value='';
+  document.getElementById('add-out').value='';
+  document.getElementById('add-break').value='';
+  document.getElementById('days-checkboxes').innerHTML=days.map((d,i)=>`<div class="day-check"><input type="checkbox" id="dc${i}" value="${d}"><label for="dc${i}">${d}</label></div>`).join('');
+  document.getElementById('add-overlay').classList.add('open');
+}
+function closeAdd(){document.getElementById('add-overlay').classList.remove('open');}
+function saveAdd(){
+  const name=document.getElementById('add-name').value.trim();
+  if(!name){alert('اكتب اسم الزبون');return;}
+  const outTime=document.getElementById('add-out').value?fromInputTime(document.getElementById('add-out').value):'';
+  const breakTime=document.getElementById('add-break').value?fromInputTime(document.getElementById('add-break').value):'';
+  const selected=[...document.querySelectorAll('#days-checkboxes input:checked')].map(i=>i.value);
+  days.forEach(day=>{
+    if(!schedules[day])schedules[day]=[];
+    schedules[day].push(selected.includes(day)?[name,outTime,breakTime]:[name,'off','off']);
+  });
+  save();closeAdd();renderTable();
 }
 
-function toggleOutOff() {
-  const off = document.getElementById('out-off-toggle').checked;
-  document.getElementById('modal-out').disabled = off;
-  if (off) {
-    document.getElementById('modal-out').value = '';
-    document.getElementById('break-off-toggle').checked = true;
-    document.getElementById('modal-break').disabled = true;
-    document.getElementById('modal-break').value = '';
-  }
+// Delete
+let delName='';
+function askDelete(name){
+  delName=name;
+  document.getElementById('confirm-msg').textContent=`هل أنت متأكد من حذف "${name}" نهائياً من كل الأيام؟`;
+  document.getElementById('confirm-overlay').classList.add('open');
 }
-function toggleBreakOff() {
-  const off = document.getElementById('break-off-toggle').checked;
-  document.getElementById('modal-break').disabled = off;
-  if (off) document.getElementById('modal-break').value = '';
-}
-function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
-function closeModalOutside(e) { if (e.target.id === 'modal-overlay') closeModal(); }
-
-function saveModal() {
-  const isOff = document.getElementById('out-off-toggle').checked;
-  const noBreak = document.getElementById('break-off-toggle').checked;
-  const outVal = document.getElementById('modal-out').value;
-  const breakVal = document.getElementById('modal-break').value;
-
-  schedules[editDay][editIdx][1] = isOff ? 'off' : (outVal ? fromInputTime(outVal) : '');
-  schedules[editDay][editIdx][2] = (isOff || noBreak) ? (isOff ? 'off' : '') : (breakVal ? fromInputTime(breakVal) : '');
-
-  saveSchedules();
-  closeModal();
-  renderTable();
+function closeConfirm(){document.getElementById('confirm-overlay').classList.remove('open');}
+function confirmDelete(){
+  days.forEach(day=>{if(schedules[day])schedules[day]=schedules[day].filter(c=>c[0]!==delName);});
+  save();closeConfirm();renderTable();
 }
 
 // Tabs
-function renderTabs() {
-  const c = document.getElementById('tabs');
-  c.innerHTML = '';
-  const today = getTodayAr();
-  days.forEach(day => {
-    const btn = document.createElement('button');
-    btn.className = 'tab' + (day===activeDay?' active':'') + (day===today?' today-tab':'');
-    btn.innerHTML = `<span class="today-dot"></span>${day}`;
-    btn.onclick = () => { activeDay = day; renderTabs(); renderTable(); };
+function renderTabs(){
+  const c=document.getElementById('tabs');c.innerHTML='';
+  const today=getTodayAr();
+  days.forEach(day=>{
+    const btn=document.createElement('button');
+    btn.className='tab'+(day===activeDay?' active':'')+(day===today?' today-tab':'');
+    btn.innerHTML=`<span class="today-dot"></span>${day}`;
+    btn.onclick=()=>{activeDay=day;renderTabs();renderTable();};
     c.appendChild(btn);
   });
 }
 
 // Table
-function renderTable() {
-  const clients = schedules[activeDay] || [];
-  const today = getTodayAr();
-  document.getElementById('card-title').textContent = `جدول يوم ${activeDay}`;
-  document.getElementById('card-badge').textContent = activeDay===today ? '📅 اليوم' : activeDay;
+function renderTable(){
+  const clients=schedules[activeDay]||[];
+  const today=getTodayAr();
+  document.getElementById('card-title').textContent=`جدول يوم ${activeDay}`;
+  document.getElementById('card-badge').textContent=activeDay===today?'📅 اليوم':activeDay;
+  const container=document.getElementById('table-body');
+  if(!clients.length){container.innerHTML='<div class="empty"><p>لا يوجد جدول لهذا اليوم</p></div>';updateStats(0,0);return;}
 
-  const container = document.getElementById('table-body');
-  if (!clients.length) { container.innerHTML = '<div class="empty"><p>لا يوجد جدول</p></div>'; updateStats(0,0); return; }
-
-  const clockIcon = `<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>`;
-
-  const timeCell = (val, isBreak, idx) => {
-    const click = `onclick="openEdit('${activeDay}',${idx})"`;
-    if (val==='off') return `<span class="off-text" ${click}>🔴 عطلة</span>`;
-    if (!val) return `<span class="time-badge ${isBreak?'break-badge':''}" ${click}>${clockIcon} —</span>`;
-    return `<span class="time-badge ${isBreak?'break-badge':''}" ${click}>${clockIcon} ${val}</span>`;
+  const clk=`<svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>`;
+  const tc=(val,isBreak,idx)=>{
+    const e=`onclick="openEdit('${activeDay}',${idx})"`;
+    if(val==='off')return `<span class="off-text" ${e}>🔴 عطلة</span>`;
+    if(!val)return `<span class="time-badge ${isBreak?'break-badge':''}" ${e}>${clk} —</span>`;
+    return `<span class="time-badge ${isBreak?'break-badge':''}" ${e}>${clk} ${val}</span>`;
   };
 
-  let html = `<table class="schedule-table"><thead><tr>
-    <th>العميل</th><th>الخروج ✏️</th><th>الترويحة ✏️</th><th class="check-col">تم</th>
-  </tr></thead><tbody>`;
-
-  clients.forEach((c,i) => {
-    const key = `${activeDay}_${i}`;
-    const isDone = doneState[key];
-    const isOff = c[1]==='off';
-    const color = avatarColors[i % avatarColors.length];
-    html += `<tr class="${isDone?'completed':''}" id="row-${i}" style="${isOff?'opacity:0.4':''}">
-      <td><div class="client-name">
-        <div class="client-avatar" style="background:${isOff?'#374151':color}">${c[0].charAt(0)}</div>
-        <span style="${isOff?'color:var(--muted)':''}">${c[0]}</span>
+  let html=`<table class="schedule-table"><thead><tr><th>العميل</th><th>الخروج ✏️</th><th>الترويحة ✏️</th><th class="check-col">تم / حذف</th></tr></thead><tbody>`;
+  clients.forEach((c,i)=>{
+    const key=`${activeDay}_${i}`;
+    const isDone=doneState[key],isOff=c[1]==='off',color=getColor(c[0]);
+    const safeName=c[0].replace(/'/g,"\\'");
+    html+=`<tr class="${isDone?'completed':''}" id="row-${i}" style="${isOff?'opacity:0.4':''}">
+      <td><div class="client-name"><div class="client-avatar" style="background:${isOff?'#374151':color}">${c[0].charAt(0)}</div><span style="${isOff?'color:var(--muted)':''}">${c[0]}</span></div></td>
+      <td>${tc(c[1],false,i)}</td>
+      <td>${tc(c[2],true,i)}</td>
+      <td class="check-col"><div class="actions-td">
+        ${isOff?'<span style="color:var(--muted)">—</span>':`<label class="check-wrap"><input type="checkbox" ${isDone?'checked':''} onchange="toggleDone('${key}',${i},this)"><div class="check-btn"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div></label>`}
+        <button class="del-btn" onclick="askDelete('${safeName}')" title="حذف الزبون">🗑️</button>
       </div></td>
-      <td>${timeCell(c[1],false,i)}</td>
-      <td>${timeCell(c[2],true,i)}</td>
-      <td class="check-col">${isOff?'<span style="color:var(--muted)">—</span>':`
-        <label class="check-wrap">
-          <input type="checkbox" ${isDone?'checked':''} onchange="toggleDone('${key}',${i},this)">
-          <div class="check-btn"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div>
-        </label>`}
-      </td>
     </tr>`;
   });
-
-  html += '</tbody></table>';
-  container.innerHTML = html;
-
-  const active = clients.filter(c=>c[1]!=='off');
-  const done = clients.filter((c,i)=>c[1]!=='off'&&doneState[`${activeDay}_${i}`]).length;
-  updateStats(active.length, done);
+  html+='</tbody></table>';
+  container.innerHTML=html;
+  const active=clients.filter(c=>c[1]!=='off');
+  const done=clients.filter((c,i)=>c[1]!=='off'&&doneState[`${activeDay}_${i}`]).length;
+  updateStats(active.length,done);
 }
 
-function toggleDone(key, idx, cb) {
-  doneState[key] = cb.checked;
-  saveDone();
-  document.getElementById(`row-${idx}`).classList.toggle('completed', cb.checked);
-  const clients = schedules[activeDay]||[];
-  const active = clients.filter(c=>c[1]!=='off');
-  const done = clients.filter((c,i)=>c[1]!=='off'&&doneState[`${activeDay}_${i}`]).length;
-  updateStats(active.length, done);
+function toggleDone(key,idx,cb){
+  doneState[key]=cb.checked;saveDone();
+  document.getElementById(`row-${idx}`).classList.toggle('completed',cb.checked);
+  const clients=schedules[activeDay]||[];
+  const active=clients.filter(c=>c[1]!=='off');
+  const done=clients.filter((c,i)=>c[1]!=='off'&&doneState[`${activeDay}_${i}`]).length;
+  updateStats(active.length,done);
 }
 
-function updateStats(total, done) {
-  document.getElementById('stat-total').textContent = total;
-  document.getElementById('stat-done').textContent = done;
-  document.getElementById('stat-left').textContent = total - done;
+function updateStats(total,done){
+  document.getElementById('stat-total').textContent=total;
+  document.getElementById('stat-done').textContent=done;
+  document.getElementById('stat-left').textContent=total-done;
 }
 
-document.getElementById('today-label').textContent = `اليوم: ${getTodayAr()}`;
-renderTabs();
-renderTable();
+document.getElementById('today-label').textContent=`اليوم: ${getTodayAr()}`;
+renderTabs();renderTable();
 </script>
 </body>
 </html>
