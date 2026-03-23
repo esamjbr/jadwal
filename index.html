@@ -206,6 +206,14 @@ let activeDay=getTodayAr();
 
 function toInputTime(t){if(!t||t==='off')return '';const p=t.split(':');return p[0].padStart(2,'0')+':'+(p[1]||'00');}
 function fromInputTime(t){if(!t)return '';const p=t.split(':');return parseInt(p[0])+':'+p[1];}
+function to12h(t){
+  if(!t||t==='off')return t;
+  const p=t.split(':');
+  let h=parseInt(p[0]),m=p[1]||'00';
+  const ampm=h>=12?'م':'ص';
+  h=h%12||12;
+  return `${h}:${m} ${ampm}`;
+}
 function getColor(name){let h=0;for(let c of name)h=(h*31+c.charCodeAt(0))%avatarColors.length;return avatarColors[h];}
 
 // Edit
@@ -306,7 +314,7 @@ function renderTable(){
     const e=`onclick="openEdit('${activeDay}',${idx})"`;
     if(val==='off')return `<span class="off-text" ${e}>🔴 عطلة</span>`;
     if(!val)return `<span class="time-badge ${isBreak?'break-badge':''}" ${e}>${clk} —</span>`;
-    return `<span class="time-badge ${isBreak?'break-badge':''}" ${e}>${clk} ${val}</span>`;
+    return `<span class="time-badge ${isBreak?'break-badge':''}" ${e}>${clk} ${to12h(val)}</span>`;
   };
 
   let html=`<table class="schedule-table"><thead><tr><th>العميل</th><th>الخروج ✏️</th><th>الترويحة ✏️</th><th class="check-col">تم / حذف</th></tr></thead><tbody>`;
